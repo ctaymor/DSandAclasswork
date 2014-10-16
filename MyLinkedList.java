@@ -1,5 +1,16 @@
+// Caroline Taymor
 import java.util.Random;
-
+/*
+ * Running Time analysis:
+ * contains: theta(n)
+ * addFirst: theta(1)
+ * addLast: theta(n)
+ * removeFirst: theta(1)
+ * removeLast: theta(1)
+ * getFirst: theta(1)
+ * getLast: theta(n) (but could have an implementation which is theta(1),
+ * see comment above method
+ */
 /**
  * LinkedList class implements a doubly-linked list.
  */
@@ -76,6 +87,23 @@ public class MyLinkedList<AnyType extends Comparable <? super AnyType>> implemen
         p.prev = newNode;         
         theSize++;
     }   
+    /**
+     * Adds an item to the beginning of the list
+     * @param x the value to add
+     */
+    public void addFirst(AnyType x)
+    {
+      add(0, x);  
+    }
+    
+    /**
+     * Add the item at the end of the list
+     * @param x the value to add
+     */
+    public void addLast(AnyType x)
+    {
+        add(x);
+    }
     
     /**
      * Gets the maximum value in the list
@@ -112,6 +140,34 @@ public class MyLinkedList<AnyType extends Comparable <? super AnyType>> implemen
     public AnyType get( int idx )
     {
         return getNode( idx ).data;
+    }
+    
+    /**
+     * Returns the first item in the list.
+     * @return the first item in the list.
+     */
+    public AnyType getFirst()
+    {
+     if(isEmpty())
+         return null;
+     return get(0);   
+    }
+    
+    /*
+     * This could be more efficiently written with
+     * return get(endMarker.prev);
+     * but I'm not sure that is what you are asking for. That would be 
+     * theta(1) instead of the theta(n) of the code below.
+     */
+    /**
+     * Returns the last item in the list.
+     * @return last item in list.
+     */
+    public AnyType getLast()
+    {
+        if(isEmpty())
+            return null;
+        return get(size() - 1);
     }
         
     /**
@@ -183,6 +239,33 @@ public class MyLinkedList<AnyType extends Comparable <? super AnyType>> implemen
     }
     
     /**
+     * Removes the first element in the list
+     * @return the element which was removed
+     */
+    public AnyType removeFirst()
+    {
+        if (isEmpty())
+            return null;
+        return remove(beginMarker.next);
+    }
+    
+    /**
+     * Removes the last element in the list
+     * @return the element which was removed
+     */
+    /* Note: using only public methods, this could be written
+     * return remove(size() - 1);
+     * but this would be far less efficient, being theta(n)
+     * instead of the theta(1) which the method I implemented is.
+     */
+    public AnyType removeLast()
+    {
+        if (isEmpty())
+            return null;
+        return remove(endMarker.prev);
+    }
+    
+    /**
      * Removes the object contained in Node p.
      * @param p the Node containing the object.
      * @return the item was removed from the collection.
@@ -195,7 +278,24 @@ public class MyLinkedList<AnyType extends Comparable <? super AnyType>> implemen
         
         return p.data;
     }
+    /**
+     * A method which checks to see if the parameterized value is anywhere in the list
+     * @param x the value to search the list for
+     * @return true if the list contains x, false otherwise
+     */
+    public boolean contains(AnyType x)
+    {
+        Node<AnyType> counter = beginMarker;
+        for (int i = 0; i < theSize; i++)
+        {
+            counter = counter.next;
+            if (counter.data.equals(x))
+                return true;
+        }
+        return false;
+    }
     
+
     /**
      * Returns a String representation of this collection.
      */
@@ -279,36 +379,46 @@ class TestLinkedList
 {
     public static void main( String [ ] args )
     {
+        
      System.out.println("Test a) an empty list");
      MyLinkedList<Integer> myList = new MyLinkedList<Integer>( );
      System.out.println("myList is " + myList);
-     System.out.println("The max of myList is " + myList.max());
+     System.out.println("myList contains 3: " + myList.contains(3));
+     myList.addFirst(3);
+     System.out.println("empty myList after addFirst(3): " + myList);
+     myList.clear();
+     myList.addLast(5);
+     System.out.println("empty myList after addLast(5): " + myList);
+     myList.clear();
+     myList.removeFirst();
+     System.out.println("empty myList after removeFirst():" + myList);
+     myList.clear();
+     myList.removeLast();
+     System.out.println("empty myList after removeLast():" + myList);
+     myList.clear();
+     System.out.println("first element in the empty list is: " + myList.getFirst());
+     System.out.println("last element in the empty list is: " + myList.getLast());
+     
+     System.out.println("b) Testing [3, 5, 4, 25]");
+     myList.clear();
+     myList.add(3);
+     myList.add(5);
+     myList.add(4);
+     myList.add(25);
+     System.out.println("myList is " + myList);
+     System.out.println("myList contains 3: " + myList.contains(3));
+     System.out.println("myList contains 7: " + myList.contains(7));
+     System.out.println("myList contains 25: " + myList.contains(25));
+     myList.addFirst(1);
+     System.out.println("After addFirst(3), myList is now " + myList);
+     myList.addLast(2);
+     System.out.println("After addLast(2), myList is now " + myList);
+     myList.removeFirst();
+     System.out.println("After removeFirst(), myList is now " + myList);
+     myList.removeLast();
+     System.out.println("After removeLast(), myList is now " + myList);
+     System.out.println("first element in myList is: " + myList.getFirst());
+     System.out.println("last element in myList is: " + myList.getLast());
 
-     System.out.println("Test b) a sorted list of size 10");
-     for(int i = 0; i < 10; i++)
-         myList.add(2*i);
-     System.out.println("myList is " + myList);
-     System.out.println("The max of myList is " + myList.max());
-     
-     System.out.println("Test c) reverse sorted list of size 10");
-     myList.clear();
-     for(int i = 10; i > 0; i--)
-         myList.add(2*i);
-     System.out.println("myList is " + myList);
-     System.out.println("The max of myList is " + myList.max());
-     
-     
-     System.out.println("Test d) random list of size 10");
-     Random rand = new Random();
-     myList.clear();
-     for(int i = 0; i < 10; i++)
-         myList.add(rand.nextInt(100));
-     System.out.println("myList is " + myList);
-     System.out.println("The max of myList is " + myList.max());
     }
 }
-
-/*
-* Caroline Taymor
-* findMax() runtime: theta(n)
-*/
