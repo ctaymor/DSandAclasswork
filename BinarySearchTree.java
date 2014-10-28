@@ -1,3 +1,5 @@
+//Caroline Taymor
+//CS124: Hw 8 problem 10 and 11
 // BinarySearchTree class
 //
 // CONSTRUCTION: with no initializer
@@ -108,6 +110,45 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     }
 
     /**
+     * Prints the tree in pre-order
+     */
+    public void printTreePreOrder()
+    {
+        if( isEmpty( ) )
+            System.out.println( "Empty tree" );
+        else
+            printTreePreOrder( root );
+    }
+    
+    /**
+     * Prints the tree in post-order
+     */
+    public void printTreePostOrder()
+    {
+        if( isEmpty( ) )
+            System.out.println( "Empty tree" );
+        else
+            printTreePostOrder( root );
+    }
+    /**
+     * Find an element of the tree
+     */
+    public AnyType find(AnyType e)
+    {
+        BinaryNode<AnyType> walker;
+        walker = root;
+        while ((walker != null) && (!walker.element.equals(e))){
+            if (walker.element.compareTo(e)>0)
+                walker = walker.left;
+            else
+                walker = walker.right;
+        }
+        if (walker == null)
+            return null;
+        return e;
+    }
+    
+    /**
      * Internal method to insert into a subtree.
      * @param x the item to insert.
      * @param t the node that roots the subtree.
@@ -206,6 +247,30 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     }
 
     /**
+     * Internal method to print a subtree in preorder.
+     */
+    private void printTreePreOrder( BinaryNode<AnyType> t ) {
+        if ( t!= null ) {
+            System.out.println( t.element );
+            printTreePreOrder( t.left );
+            printTreePreOrder( t.right );
+        }
+    }
+    
+    /**
+     * Internal method to print a subtree in postorder.
+     */
+    private void printTreePostOrder( BinaryNode<AnyType> t )
+    {
+        if ( t != null )
+        {
+            printTreePostOrder( t.left );
+            printTreePostOrder( t.right );
+            System.out.println( t.element );
+        }
+    }
+    
+    /**
      * Internal method to print a subtree in sorted order.
      * @param t the node that roots the subtree.
      */
@@ -261,30 +326,31 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     public static void main( String [ ] args )
     {
         BinarySearchTree<Integer> t = new BinarySearchTree<Integer>( );
-        final int NUMS = 4000;
-        final int GAP  =   37;
+        t.insert(20);
+        t.insert(2);
+        t.insert(77);
+        t.insert(23);
+        t.insert(92);
+        t.insert(44);
+        t.insert(29);
+        t.insert(5);
+        t.insert(17);
+        t.insert(3);
+        System.out.println("Caroline Taymor: CS124 HW 8");
+        System.out.println("Problem 10:");
+        System.out.println("Tree in order is:");
+        t.printTree();
+        System.out.println("Tree in preorder is:");
+        t.printTreePreOrder();
+        System.out.println("Tree in postorder is:");
+        t.printTreePostOrder();
 
-        System.out.println( "Checking... (no more output means success)" );
-
-        for( int i = GAP; i != 0; i = ( i + GAP ) % NUMS )
-            t.insert( i );
-
-        for( int i = 1; i < NUMS; i+= 2 )
-            t.remove( i );
-
-        if( NUMS < 40 )
-            t.printTree( );
-        if( t.findMin( ) != 2 || t.findMax( ) != NUMS - 2 )
-            System.out.println( "FindMin or FindMax error!" );
-
-        for( int i = 2; i < NUMS; i+=2 )
-             if( !t.contains( i ) )
-                 System.out.println( "Find error1!" );
-
-        for( int i = 1; i < NUMS; i+=2 )
-        {
-            if( t.contains( i ) )
-                System.out.println( "Find error2!" );
-        }
+        System.out.println("Problem 11:");
+        System.out.println("t.find(77) is " + t.find(77));
+        System.out.println("t.find(5) is " + t.find(5));
+        System.out.println("t.find(100) is " + t.find(100));
+        System.out.println("t.find(-3) is " + t.find(-3));
+        System.out.println("t.find(0) is " + t.find(0));
+        System.out.println("t.find(4) is " + t.find(4));
     }
 }
