@@ -1,5 +1,5 @@
 //Caroline Taymor
-//CS124: Hw 8 problem 10 and 11
+//CS124: Hw 9 problem 1 and 2
 // BinarySearchTree class
 //
 // CONSTRUCTION: with no initializer
@@ -97,7 +97,41 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     {
         return root == null;
     }
-
+    
+    /**
+     * Return the number of nodes in the tree;
+     * @return the number of nodes 
+     */
+    public int nodes()
+    {
+     if (isEmpty())
+         return 0;
+     return nodes(root);
+    }
+    
+    /**
+     * Return the number of leaves in the tree;
+     * @return the number of leaves
+     */
+    public int leaves()
+    {
+     if (isEmpty())
+         return 0;
+     return leaves(root);
+    }
+    
+    /**
+     * Return the number of full nodes in the tree;
+     * @return the number of full nodes
+     */
+    public int fullNodes()
+    {
+     if (isEmpty())
+         return 0;
+     return fullNodes(root);
+    }
+    
+    
     /**
      * Print the tree contents in sorted order.
      */
@@ -131,6 +165,17 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
             printTreePostOrder( root );
     }
     /**
+     * Prints all the elements in the tree whose value is x with 
+     * k1 <= x <= k2.
+     * @param k1 the first element to print between
+     * @param k2 the second element to print between
+     */
+    public void printBetween(AnyType k1, AnyType k2)
+    {
+        printBetween(root, k1, k2);
+    }
+    
+    /**
      * Find an element of the tree
      */
     public AnyType find(AnyType e)
@@ -148,25 +193,62 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         return e;
     }
     
+//    /**
+//     * Internal method to insert into a subtree.
+//     * @param x the item to insert.
+//     * @param t the node that roots the subtree.
+//     * @return the new root of the subtree.
+//     */
+//    private BinaryNode<AnyType> insert( AnyType x, BinaryNode<AnyType> t )
+//    {
+//        if( t == null )
+//            return new BinaryNode<AnyType>( x, null, null );
+//        
+//        int compareResult = x.compareTo( t.element );
+//            
+//        if( compareResult < 0 )
+//            t.left = insert( x, t.left );
+//        else if( compareResult > 0 )
+//            t.right = insert( x, t.right );
+//        else
+//            ;  // Duplicate; do nothing
+//        return t;
+//    }
+    
+    // Note: This preserves the public method the same whether or not the insert
+    // is recursive, so that the API is not changed, although it is not strictly
+    // needed to pass in the root.
     /**
-     * Internal method to insert into a subtree.
-     * @param x the item to insert.
-     * @param t the node that roots the subtree.
-     * @return the new root of the subtree.
+     * 
+     * @param x
+     * @param t
+     * @return
      */
-    private BinaryNode<AnyType> insert( AnyType x, BinaryNode<AnyType> t )
+    private BinaryNode<AnyType> insert( AnyType x, BinaryNode<AnyType> t)
     {
-        if( t == null )
-            return new BinaryNode<AnyType>( x, null, null );
-        
-        int compareResult = x.compareTo( t.element );
-            
-        if( compareResult < 0 )
-            t.left = insert( x, t.left );
-        else if( compareResult > 0 )
-            t.right = insert( x, t.right );
-        else
-            ;  // Duplicate; do nothing
+        BinaryNode<AnyType> walker = t;
+        if (t == null)
+            t = new BinaryNode<AnyType>(x);
+        while ((walker != null))
+        {
+            if (walker.element.compareTo(x)>0) {
+                if (walker.left != null) {
+                    walker = walker.left;
+                } else {
+                    walker.left = new BinaryNode<AnyType>(x);
+                    break;
+                }
+            } else if (walker.element.compareTo(x)<0) {
+                if (walker.right != null) {
+                    walker = walker.right;
+                } else {
+                    walker.right = new BinaryNode<AnyType>(x);
+                    break;
+                }
+            } else {
+                break;
+            } 
+        }
         return t;
     }
 
@@ -271,6 +353,73 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     }
     
     /**
+     * Internal method to print the elements in the tree whose value 
+     * is x with k1 <= x <= k2.
+     * @param t the node that roots the subtree
+     * @param k1 the first element to print between
+     * @param k2 the second element to print between
+     */
+    private void printBetween(BinaryNode<AnyType> t, AnyType k1, AnyType k2)
+    {
+        if (t != null) {
+            if (t.element.compareTo(k1)<0) {
+                printBetween(t.left, k1, k2);
+                printBetween()
+            }
+        }
+    }
+    
+    /**
+     * Internal method to count nodes in the tree.
+     * @param t the node that roots the subtree.
+     * @return the number of nodes in the subtree.
+     */
+    private int nodes( BinaryNode<AnyType> t )
+    {
+        if (t != null)
+            return nodes(t.left) + nodes(t.right) + 1;
+        return 0;
+    }
+    
+    /**
+     * Internal method to count leaves in the tree.
+     * @param t the node that roots the subtree.
+     * @return the number of leaves in the subtree.
+     */
+    private int leaves( BinaryNode<AnyType> t )
+    {
+        if (t != null) {
+            if ((t.left != null) && (t.right != null))
+                return leaves(t.left) + leaves(t.right);
+            else if (t.left != null)
+                return leaves(t.left);
+            else if (t.right != null)
+                return leaves(t.right);
+            else
+                return 1;
+        }
+        return 0;
+    }
+    
+    /**
+     * Internal method to count nodes in the tree.
+     * @param t the node that roots the subtree.
+     * @return the number of nodes in the subtree.
+     */
+    private int fullNodes( BinaryNode<AnyType> t )
+    {
+        if (t != null) {
+            if ((t.left != null) && (t.right != null))
+                return 1 + fullNodes(t.left) + fullNodes(t.right);
+            else if (t.left != null)
+                return fullNodes(t.left);
+            else if (t.right != null)
+                return fullNodes(t.right);
+        }
+        return 0;
+    }
+    
+    /**
      * Internal method to print a subtree in sorted order.
      * @param t the node that roots the subtree.
      */
@@ -336,21 +485,27 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         t.insert(5);
         t.insert(17);
         t.insert(3);
-        System.out.println("Caroline Taymor: CS124 HW 8");
-        System.out.println("Problem 10:");
-        System.out.println("Tree in order is:");
+        System.out.println("Caroline Taymor: CS124 HW 9");
+        System.out.println("Problem 1:");
+        System.out.println("Tree in order with non-recursive insert is:");
         t.printTree();
-        System.out.println("Tree in preorder is:");
-        t.printTreePreOrder();
-        System.out.println("Tree in postorder is:");
-        t.printTreePostOrder();
+        System.out.println("Problem 2a:");
+        System.out.println("The number of nodes in the tree is: " + t.nodes());
+        System.out.println("Runtime of nodes() is theta n.");
+        System.out.println("Problem 2b:");
+        System.out.println("The number of leaves in the tree is: " + t.leaves());
+        System.out.println("Runtime of leaves() is theta n.");
+        System.out.println("Problem 2c:");
+        System.out.println("The number of full nodes in the tree is: " + t.fullNodes());
+        System.out.println("Runtime of fullNodes() is theta n.");
+        System.out.println("Problem 3/4.37:");
+        System.out.println("The elements of the tree between 3 an 35 are: " + t.printBetween(3, 35));
+        System.out.println("The elements of the tree between 3 an 35 are: " + t.printBetween(-4, -2));
+        System.out.println("The elements of the tree between 3 an 35 are: " + t.printBetween(104, 1023));
+        System.out.println("The elements of the tree between 3 an 35 are: " + t.printBetween(77, 92));
+        System.out.println("The elements of the tree between 3 an 35 are: " + t.printBetween(23, 105));
+        System.out.println("The elements of the tree between 3 an 35 are: " + t.printBetween(-4, 7));
 
-        System.out.println("Problem 11:");
-        System.out.println("t.find(77) is " + t.find(77));
-        System.out.println("t.find(5) is " + t.find(5));
-        System.out.println("t.find(100) is " + t.find(100));
-        System.out.println("t.find(-3) is " + t.find(-3));
-        System.out.println("t.find(0) is " + t.find(0));
-        System.out.println("t.find(4) is " + t.find(4));
+
     }
 }
